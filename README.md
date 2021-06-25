@@ -1,5 +1,5 @@
 # cellar-ms-java
-Wine Cellar Management Microservice using R2DBC under Kotlin
+Wine Cellar Management Microservice using R2DBC under Java
 
 ### Reference Documentation
 For further reference, please consider the following sections:
