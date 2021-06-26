@@ -23,60 +23,26 @@
  */
 package io.jrb.labs.cellarms.resource;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Value;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
 @Value
 @Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WineResource {
 
     String guid;
-
-    @NotBlank(message = "Name is mandatory")
-    @Size(min = 4, max = 64, message = "Name must be between 4 and 64 characters")
     String name;
-
-    @NotBlank(message = "Type is mandatory")
-    @Size(min = 4, max = 64, message = "Type must be between 4 and 64 characters")
     String type;
-
-    @NotBlank(message = "Vintage is mandatory")
-    @Size(min = 4, max = 64, message = "Vintage must be between 4 and 64 characters")
     String vintage;
-
-    @NotBlank(message = "Vintage is mandatory")
-    @Size(min = 4, max = 64, message = "Vintage must be between 4 and 64 characters")
     String producer;
-
-    @NotBlank(message = "Varietal is mandatory")
-    @Size(min = 4, max = 64, message = "Varietal must be between 4 and 64 characters")
     String varietal;
-
-    @NotBlank(message = "Designation is mandatory")
-    @Size(min = 4, max = 64, message = "Designation must be between 4 and 64 characters")
     String designation;
-
-    @NotBlank(message = "Vineyard is mandatory")
-    @Size(min = 4, max = 64, message = "Vineyard must be between 4 and 64 characters")
     String vineyard;
-
-    @NotBlank(message = "Country is mandatory")
-    @Size(min = 2, max = 64, message = "Country must be between 2 and 64 characters")
     String country;
-
-    @NotBlank(message = "Region is mandatory")
-    @Size(min = 4, max = 64, message = "Region must be between 4 and 64 characters")
     String region;
-
-    @NotBlank(message = "Subregion is mandatory")
-    @Size(min = 4, max = 64, message = "Subregion must be between 4 and 64 characters")
     String subregion;
-
-    @NotBlank(message = "Appellation is mandatory")
-    @Size(min = 4, max = 64, message = "Appellation must be between 4 and 64 characters")
     String appellation;
 
 }

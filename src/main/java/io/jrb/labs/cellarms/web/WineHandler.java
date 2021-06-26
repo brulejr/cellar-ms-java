@@ -23,6 +23,7 @@
  */
 package io.jrb.labs.cellarms.web;
 
+import io.jrb.labs.cellarms.resource.AddWine;
 import io.jrb.labs.cellarms.resource.WineResource;
 import io.jrb.labs.cellarms.service.WineService;
 import org.springframework.http.HttpStatus;
@@ -38,18 +39,23 @@ import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 public class WineHandler {
 
     private final WineService wineService;
+    private final RequestHandlerUtils requestHandlerUtils;
 
-    public WineHandler(final WineService wineService) {
+    public WineHandler(
+            final WineService wineService,
+            final RequestHandlerUtils requestHandlerUtils
+    ) {
         this.wineService = wineService;
+        this.requestHandlerUtils = requestHandlerUtils;
     }
 
     public Mono<ServerResponse> createWine(final ServerRequest serverRequest) {
-        final Mono<WineResource> wineResourceMono = serverRequest.bodyToMono(WineResource.class);
-        return wineResourceMono.flatMap(wine ->
-                ServerResponse.status(HttpStatus.CREATED)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(wineService.createWine(wine), WineResource.class)
-        );
+        return requestHandlerUtils.requireValidBody((final Mono<AddWine> addWineMono) ->
+            addWineMono.flatMap(wine ->
+                    ServerResponse.status(HttpStatus.CREATED)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(wineService.createWine(wine), WineResource.class)
+            ), serverRequest, AddWine.class);
     }
 
     public Mono<ServerResponse> findWine(final ServerRequest serverRequest) {
@@ -58,8 +64,7 @@ public class WineHandler {
         return wineResourceMono.flatMap(wine ->
                 ServerResponse.ok()
                         .body(fromValue(wine)))
-                .switchIfEmpty(ServerResponse.notFound().build())
-                ;
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public  Mono<ServerResponse> getAllWines(final ServerRequest serverRequest) {

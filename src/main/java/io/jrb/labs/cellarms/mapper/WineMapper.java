@@ -24,13 +24,14 @@
 package io.jrb.labs.cellarms.mapper;
 
 import io.jrb.labs.cellarms.domain.WineEntity;
+import io.jrb.labs.cellarms.resource.AddWine;
 import io.jrb.labs.cellarms.resource.WineResource;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface WineMapper {
 
-    WineEntity wineResourceToWineEntity(WineResource wineResource);
+    WineEntity addWineToWineEntity(AddWine addWine);
 
     WineResource wineEntityToWineResource(WineEntity wineEntity);
 

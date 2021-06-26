@@ -2,6 +2,7 @@ package io.jrb.labs.cellarms.mapper;
 
 import io.jrb.labs.cellarms.domain.WineEntity;
 import io.jrb.labs.cellarms.domain.WineEntity.WineEntityBuilder;
+import io.jrb.labs.cellarms.resource.AddWine;
 import io.jrb.labs.cellarms.resource.WineResource;
 import io.jrb.labs.cellarms.resource.WineResource.WineResourceBuilder;
 import javax.annotation.processing.Generated;
@@ -9,32 +10,31 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-06-25T07:03:51-0400",
+    date = "2021-06-26T09:23:53-0400",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 14.0.1 (Oracle Corporation)"
 )
 @Component
 public class WineMapperImpl implements WineMapper {
 
     @Override
-    public WineEntity wineResourceToWineEntity(WineResource wineResource) {
-        if ( wineResource == null ) {
+    public WineEntity addWineToWineEntity(AddWine addWine) {
+        if ( addWine == null ) {
             return null;
         }
 
         WineEntityBuilder wineEntity = WineEntity.builder();
 
-        wineEntity.guid( wineResource.getGuid() );
-        wineEntity.name( wineResource.getName() );
-        wineEntity.type( wineResource.getType() );
-        wineEntity.vintage( wineResource.getVintage() );
-        wineEntity.producer( wineResource.getProducer() );
-        wineEntity.varietal( wineResource.getVarietal() );
-        wineEntity.designation( wineResource.getDesignation() );
-        wineEntity.vineyard( wineResource.getVineyard() );
-        wineEntity.country( wineResource.getCountry() );
-        wineEntity.region( wineResource.getRegion() );
-        wineEntity.subregion( wineResource.getSubregion() );
-        wineEntity.appellation( wineResource.getAppellation() );
+        wineEntity.name( addWine.getName() );
+        wineEntity.type( addWine.getType() );
+        wineEntity.vintage( addWine.getVintage() );
+        wineEntity.producer( addWine.getProducer() );
+        wineEntity.varietal( addWine.getVarietal() );
+        wineEntity.designation( addWine.getDesignation() );
+        wineEntity.vineyard( addWine.getVineyard() );
+        wineEntity.country( addWine.getCountry() );
+        wineEntity.region( addWine.getRegion() );
+        wineEntity.subregion( addWine.getSubregion() );
+        wineEntity.appellation( addWine.getAppellation() );
 
         return wineEntity.build();
     }

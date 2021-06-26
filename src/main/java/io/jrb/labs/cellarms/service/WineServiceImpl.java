@@ -25,6 +25,7 @@ package io.jrb.labs.cellarms.service;
 
 import io.jrb.labs.cellarms.mapper.WineMapper;
 import io.jrb.labs.cellarms.repository.WineRepository;
+import io.jrb.labs.cellarms.resource.AddWine;
 import io.jrb.labs.cellarms.resource.WineResource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -44,9 +45,9 @@ public class WineServiceImpl implements WineService {
     }
 
     @Override
-    public Mono<WineResource> createWine(final WineResource wineResource) {
-        return Mono.just(wineResource)
-                .map(wineMapper::wineResourceToWineEntity)
+    public Mono<WineResource> createWine(final AddWine addWine) {
+        return Mono.just(addWine)
+                .map(wineMapper::addWineToWineEntity)
                 .map(wineEntity -> wineEntity.withGuid(UUID.randomUUID().toString()))
                 .flatMap(wineRepository::save)
                 .map(wineMapper::wineEntityToWineResource);

@@ -21,19 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.service;
+package io.jrb.labs.cellarms.resource;
 
-import io.jrb.labs.cellarms.resource.AddWine;
-import io.jrb.labs.cellarms.resource.WineResource;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
+import lombok.Value;
+import org.springframework.http.HttpStatus;
 
-public interface WineService {
+import java.time.Instant;
+import java.util.List;
 
-    Mono<WineResource> createWine(AddWine wine);
+@Value
+@Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class ErrorResponse {
 
-    Mono<WineResource> findWineByGuid(String guid);
-
-    Flux<WineResource> retrieveWines();
+    HttpStatus status;
+    Integer code;
+    String message;
+    Instant timestamp;
+    List<String> bindingErrors;
 
 }
