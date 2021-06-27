@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.resource;
+package io.jrb.labs.common.resource;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -36,10 +36,17 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ErrorResponse {
 
+    @Builder.Default
+    Instant timestamp = Instant.now();
+
+    String path;
+
     HttpStatus status;
+
     Integer code;
+
     String message;
-    Instant timestamp;
+
     List<String> bindingErrors;
 
 }

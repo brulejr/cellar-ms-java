@@ -50,19 +50,22 @@ public class WineServiceImpl implements WineService {
                 .map(wineMapper::addWineToWineEntity)
                 .map(wineEntity -> wineEntity.withGuid(UUID.randomUUID().toString()))
                 .flatMap(wineRepository::save)
-                .map(wineMapper::wineEntityToWineResource);
+                .map(wineMapper::wineEntityToWineResource)
+                .onErrorResume(t -> handleException(t, "create wine"));
     }
 
     @Override
     public Mono<WineResource> findWineByGuid(final String guid) {
         return wineRepository.findByGuid(guid)
-                .map(wineMapper::wineEntityToWineResource);
+                .map(wineMapper::wineEntityToWineResource)
+                .onErrorResume(t -> handleException(t, "find a wine"));
     }
 
     @Override
     public Flux<WineResource> retrieveWines() {
         return wineRepository.findAll()
-                .map(wineMapper::wineEntityToWineResource);
+                .map(wineMapper::wineEntityToWineResource)
+                .onErrorResume(t -> handleException(t, "retrieve wines"));
     }
 
 }

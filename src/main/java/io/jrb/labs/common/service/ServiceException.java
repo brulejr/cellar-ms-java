@@ -21,20 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.service;
+package io.jrb.labs.common.service;
 
-import io.jrb.labs.cellarms.resource.AddWine;
-import io.jrb.labs.cellarms.resource.WineResource;
-import io.jrb.labs.common.service.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+public class ServiceException extends RuntimeException {
 
-public interface WineService extends Service {
+    private final String serviceName;
 
-    Mono<WineResource> createWine(AddWine wine);
+    public ServiceException(final Service service, final String message) {
+        super(message);
+        this.serviceName = service.getServiceName();
+    }
 
-    Mono<WineResource> findWineByGuid(String guid);
+    public ServiceException(final Service service, final String message, final Throwable cause) {
+        super(message, cause);
+        this.serviceName = service.getServiceName();
+    }
 
-    Flux<WineResource> retrieveWines();
+    public String getServiceName() { return serviceName; }
 
 }

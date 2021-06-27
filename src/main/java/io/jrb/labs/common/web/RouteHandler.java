@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.web;
+package io.jrb.labs.common.web;
 
-import io.jrb.labs.cellarms.resource.ErrorResponse;
+import io.jrb.labs.common.resource.ErrorResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -37,19 +36,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
-public class RequestHandlerUtils {
+public interface RouteHandler {
 
-    private final Validator validator;
-
-    public RequestHandlerUtils(final Validator validator) {
-        this.validator = validator;
-    }
-
-    public <T> Mono<ServerResponse> requireValidBody(
+    default <T> Mono<ServerResponse> requireValidBody(
             final Function<Mono<T>, Mono<ServerResponse>> block,
             final ServerRequest request,
-            final Class<T> bodyClass
+            final Class<T> bodyClass,
+            final Validator validator
     ) {
         return request
                 .bodyToMono(bodyClass)

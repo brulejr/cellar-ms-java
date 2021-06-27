@@ -26,6 +26,7 @@ package io.jrb.labs.cellarms.web;
 import io.jrb.labs.cellarms.resource.AddWine;
 import io.jrb.labs.cellarms.resource.WineResource;
 import io.jrb.labs.cellarms.service.WineService;
+import io.jrb.labs.common.web.RouteHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -33,29 +34,29 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Validator;
+
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
 @Component
-public class WineHandler {
+public class WineHandler implements RouteHandler {
 
     private final WineService wineService;
-    private final RequestHandlerUtils requestHandlerUtils;
+    private final Validator validator;
 
-    public WineHandler(
-            final WineService wineService,
-            final RequestHandlerUtils requestHandlerUtils
-    ) {
+    public WineHandler(final WineService wineService, final Validator validator) {
         this.wineService = wineService;
-        this.requestHandlerUtils = requestHandlerUtils;
+        this.validator = validator;
     }
 
     public Mono<ServerResponse> createWine(final ServerRequest serverRequest) {
-        return requestHandlerUtils.requireValidBody((final Mono<AddWine> addWineMono) ->
-            addWineMono.flatMap(wine ->
-                    ServerResponse.status(HttpStatus.CREATED)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(wineService.createWine(wine), WineResource.class)
-            ), serverRequest, AddWine.class);
+        return requireValidBody((final Mono<AddWine> addWineMono) ->
+            addWineMono.flatMap(wine -> {
+                final Mono<WineResource> wineResourceMono = wineService.createWine(wine);
+                return ServerResponse.status(HttpStatus.CREATED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(wineResourceMono, WineResource.class);
+            }), serverRequest, AddWine.class, validator);
     }
 
     public Mono<ServerResponse> findWine(final ServerRequest serverRequest) {
@@ -67,7 +68,7 @@ public class WineHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public  Mono<ServerResponse> getAllWines(final ServerRequest serverRequest) {
+    public Mono<ServerResponse> getAllWines(final ServerRequest serverRequest) {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(wineService.retrieveWines(), WineResource.class);

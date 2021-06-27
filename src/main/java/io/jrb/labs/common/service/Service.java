@@ -21,20 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.service;
+package io.jrb.labs.common.service;
 
-import io.jrb.labs.cellarms.resource.AddWine;
-import io.jrb.labs.cellarms.resource.WineResource;
-import io.jrb.labs.common.service.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface WineService extends Service {
+import static java.lang.String.format;
 
-    Mono<WineResource> createWine(AddWine wine);
+public interface Service {
 
-    Mono<WineResource> findWineByGuid(String guid);
+    default String getServiceName() {
+        return getClass().getSimpleName();
+    }
 
-    Flux<WineResource> retrieveWines();
+    default <T> Mono<T> handleException(final Throwable t, final String action) {
+        final String pattern = "Unable to %s due to unexpected error!";
+        return Mono.error(new ServiceException(this, format(pattern, action), t));
+    }
 
 }

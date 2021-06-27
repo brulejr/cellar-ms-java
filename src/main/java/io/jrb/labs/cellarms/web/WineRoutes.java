@@ -23,26 +23,42 @@
  */
 package io.jrb.labs.cellarms.web;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
-@Configuration
-public class WineFunctionalConfig {
+@Component
+public class WineRoutes {
 
-    @Bean
-    public RouterFunction<ServerResponse> route(final WineHandler wineHandler){
-        return RouterFunctions
-                .route(GET("/api/wines/{guid}").and(accept(APPLICATION_JSON)),wineHandler::findWine)
-                .andRoute(GET("/api/wines").and(accept(APPLICATION_JSON)), wineHandler::getAllWines)
-                .andRoute(POST("/api/wines").and(accept(APPLICATION_JSON)),wineHandler::createWine);
+    private final WineHandler wineHandler;
+
+    public WineRoutes(final WineHandler wineHandler) {
+        this.wineHandler = wineHandler;
+    }
+
+    public RouterFunction<ServerResponse> routes() {
+        return route()
+                .add(createWineRoute())
+                .add(findWineRoute())
+                .add(retrieveWinesRoute())
+                .build();
+    }
+
+    private RouterFunction<ServerResponse> createWineRoute() {
+        return route().POST("/api/wines", wineHandler::createWine)
+                .build();
+    }
+
+    private RouterFunction<ServerResponse> findWineRoute() {
+        return route().GET("/api/wines/{guid}", wineHandler::findWine)
+                .build();
+    }
+
+    private RouterFunction<ServerResponse> retrieveWinesRoute() {
+        return route().GET("/api/wines", wineHandler::getAllWines)
+                .build();
     }
 
 }
