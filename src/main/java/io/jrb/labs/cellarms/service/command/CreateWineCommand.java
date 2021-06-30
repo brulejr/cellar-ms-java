@@ -21,60 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.domain;
+package io.jrb.labs.cellarms.service.command;
 
-import io.jrb.labs.common.domain.Entity;
-import lombok.Builder;
-import lombok.Value;
-import lombok.With;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import io.jrb.labs.cellarms.domain.WineEntity;
+import io.jrb.labs.cellarms.mapper.WineMapper;
+import io.jrb.labs.cellarms.repository.WineRepository;
+import io.jrb.labs.cellarms.resource.AddWine;
+import io.jrb.labs.cellarms.resource.WineResource;
+import io.jrb.labs.common.service.command.entity.CreateEntityCommand;
+import org.springframework.stereotype.Component;
 
-@Value
-@Builder
-@Table(value = "t_wine")
-public class WineEntity implements Entity<WineEntity> {
+@Component
+public class CreateWineCommand extends CreateEntityCommand<AddWine, WineResource, WineEntity> {
 
-    @Id
-    @Column(value = "wi_id")
-    Long id;
-
-    @With
-    @Column(value = "wi_guid")
-    String guid;
-
-    @Column(value = "wi_name")
-    String name;
-
-    @Column(value = "wi_type")
-    String type;
-
-    @Column(value = "wi_vintage")
-    String vintage;
-
-    @Column(value = "wi_producer")
-    String producer;
-
-    @Column(value = "wi_varietal")
-    String varietal;
-
-    @Column(value = "wi_designation")
-    String designation;
-
-    @Column(value = "wi_vineyard")
-    String vineyard;
-
-    @Column(value = "wi_country")
-    String country;
-
-    @Column(value = "wi_region")
-    String region;
-
-    @Column(value = "wi_subregion")
-    String subregion;
-
-    @Column(value = "wi_appellation")
-    String appellation;
+    public CreateWineCommand(final WineMapper wineMapper, final WineRepository wineRepository) {
+        super("wine", wineMapper::addWineToWineEntity, wineMapper::wineEntityToWineResource, wineRepository);
+    }
 
 }

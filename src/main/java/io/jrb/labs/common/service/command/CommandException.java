@@ -21,60 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.domain;
+package io.jrb.labs.common.service.command;
 
-import io.jrb.labs.common.domain.Entity;
-import lombok.Builder;
-import lombok.Value;
-import lombok.With;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+public class CommandException extends RuntimeException {
 
-@Value
-@Builder
-@Table(value = "t_wine")
-public class WineEntity implements Entity<WineEntity> {
+    private final String commandName;
 
-    @Id
-    @Column(value = "wi_id")
-    Long id;
+    public <REQ, RSP> CommandException(
+            final Command<REQ, RSP> command,
+            final String message
+    ) {
+        super(message);
+        this.commandName = command.getCommandName();
+    }
 
-    @With
-    @Column(value = "wi_guid")
-    String guid;
+    public <REQ, RSP> CommandException(
+            final Command<REQ, RSP> command,
+            final String message,
+            final Throwable cause
+    ) {
+        super(message, cause);
+        this.commandName = command.getCommandName();
+    }
 
-    @Column(value = "wi_name")
-    String name;
-
-    @Column(value = "wi_type")
-    String type;
-
-    @Column(value = "wi_vintage")
-    String vintage;
-
-    @Column(value = "wi_producer")
-    String producer;
-
-    @Column(value = "wi_varietal")
-    String varietal;
-
-    @Column(value = "wi_designation")
-    String designation;
-
-    @Column(value = "wi_vineyard")
-    String vineyard;
-
-    @Column(value = "wi_country")
-    String country;
-
-    @Column(value = "wi_region")
-    String region;
-
-    @Column(value = "wi_subregion")
-    String subregion;
-
-    @Column(value = "wi_appellation")
-    String appellation;
+    public String getCommandName() { return commandName; }
 
 }

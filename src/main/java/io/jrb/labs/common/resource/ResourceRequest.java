@@ -21,20 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.service;
+package io.jrb.labs.common.resource;
 
-import io.jrb.labs.cellarms.resource.AddWine;
-import io.jrb.labs.cellarms.resource.WineResource;
-import io.jrb.labs.common.service.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-public interface WineService extends Service {
-
-    Mono<WineResource> createWine(AddWine wine);
-
-    Mono<WineResource> findWineByGuid(String guid);
-
-    Flux<WineResource> retrieveWines();
-
+public class ResourceRequest {
 }

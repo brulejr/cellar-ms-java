@@ -21,16 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.repository;
+package io.jrb.labs.common.service.command.entity;
 
-import io.jrb.labs.cellarms.domain.WineEntity;
+import io.jrb.labs.common.domain.Entity;
 import io.jrb.labs.common.repository.EntityRepository;
-import org.springframework.stereotype.Repository;
+import io.jrb.labs.common.service.command.Command;
 import reactor.core.publisher.Mono;
 
-@Repository
-public interface WineRepository extends EntityRepository<WineEntity> {
+import java.util.UUID;
+import java.util.function.Function;
 
-    Mono<WineEntity> findByGuid(String guid);
+public abstract class CreateEntityCommand<REQ, RSP, E extends Entity<E>> implements Command<REQ, RSP> {
+
+    private final String entityType;
+    private final Function<REQ, E> toEntityFn;
+    private final Function<E, RSP> toResourceFn;
+    private final EntityRepository<E> repository;
+
+    protected CreateEntityCommand(
+            final String entityType,
+            final Function<REQ, E> toEntityFn,
+            final Function<E, RSP> toResourceFn,
+            final EntityRepository<E> repository
+    ) {
+        this.entityType = entityType;
+        this.toEntityFn = toEntityFn;
+        this.toResourceFn = toResourceFn;
+        this.repository = repository;
+    }
+
+    @Override
+    public Mono<RSP> execute(final REQ request) {
+        return Mono.just(request)
+                .map(toEntityFn)
+                .map(entity -> entity.withGuid(UUID.randomUUID().toString()))
+                .flatMap(repository::save)
+                .map(toResourceFn)
+                .onErrorResume(t -> handleException(t, "create " + entityType));
+    }
 
 }

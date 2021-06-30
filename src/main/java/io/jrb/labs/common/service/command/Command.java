@@ -21,16 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.repository;
+package io.jrb.labs.common.service.command;
 
-import io.jrb.labs.cellarms.domain.WineEntity;
-import io.jrb.labs.common.repository.EntityRepository;
-import org.springframework.stereotype.Repository;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
-@Repository
-public interface WineRepository extends EntityRepository<WineEntity> {
+import static java.lang.String.format;
 
-    Mono<WineEntity> findByGuid(String guid);
+/**
+ * Defines a command that can be executed.
+ *
+ * @param <REQ> the request type
+ * @param <RSP> the response type
+ */
+@FunctionalInterface
+public interface Command<REQ, RSP> {
+
+    /**
+     * Obtains the name for this command.
+     *
+     * @return the command name
+     */
+    default String getCommandName() { return getClass().getSimpleName(); }
+
+    /**
+     * Provides a default exception handler for commands.
+     *
+     * @param t the exception
+     * @param action a string describing the current action
+     * @param <T> the effective type
+     * @return a {@link Mono} containing the error
+     */
+    default <T> Mono<T> handleException(final Throwable t, final String action) {
+        final String pattern = "Unable to %s due to unexpected error!";
+        return Mono.error(new CommandException(this, format(pattern, action), t));
+    }
+
+    /**
+     * Executes the command.
+     *
+     * @param request the command request
+     * @return the command response
+     */
+    Publisher<RSP> execute(REQ request);
 
 }

@@ -21,60 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.domain;
+package io.jrb.labs.common.resource;
 
-import io.jrb.labs.common.domain.Entity;
-import lombok.Builder;
-import lombok.Value;
-import lombok.With;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
-@Value
-@Builder
-@Table(value = "t_wine")
-public class WineEntity implements Entity<WineEntity> {
-
-    @Id
-    @Column(value = "wi_id")
-    Long id;
-
-    @With
-    @Column(value = "wi_guid")
-    String guid;
-
-    @Column(value = "wi_name")
-    String name;
-
-    @Column(value = "wi_type")
-    String type;
-
-    @Column(value = "wi_vintage")
-    String vintage;
-
-    @Column(value = "wi_producer")
-    String producer;
-
-    @Column(value = "wi_varietal")
-    String varietal;
-
-    @Column(value = "wi_designation")
-    String designation;
-
-    @Column(value = "wi_vineyard")
-    String vineyard;
-
-    @Column(value = "wi_country")
-    String country;
-
-    @Column(value = "wi_region")
-    String region;
-
-    @Column(value = "wi_subregion")
-    String subregion;
-
-    @Column(value = "wi_appellation")
-    String appellation;
-
+public interface Resource {
 }

@@ -21,60 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.domain;
+package io.jrb.labs.common.service.command.entity;
 
 import io.jrb.labs.common.domain.Entity;
-import lombok.Builder;
-import lombok.Value;
-import lombok.With;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import io.jrb.labs.common.repository.EntityRepository;
+import io.jrb.labs.common.service.command.Command;
+import reactor.core.publisher.Mono;
 
-@Value
-@Builder
-@Table(value = "t_wine")
-public class WineEntity implements Entity<WineEntity> {
+import java.util.function.Function;
 
-    @Id
-    @Column(value = "wi_id")
-    Long id;
+public abstract class FindEntityCommand<RSP, E extends Entity<E>> implements Command<String, RSP> {
 
-    @With
-    @Column(value = "wi_guid")
-    String guid;
+    private final String entityType;
+    private final Function<E, RSP> toResourceFn;
+    private final EntityRepository<E> repository;
 
-    @Column(value = "wi_name")
-    String name;
+    protected FindEntityCommand(
+            final String entityType,
+            final Function<E, RSP> toResourceFn,
+            final EntityRepository<E> repository
+    ) {
+        this.entityType = entityType;
+        this.toResourceFn = toResourceFn;
+        this.repository = repository;
+    }
 
-    @Column(value = "wi_type")
-    String type;
-
-    @Column(value = "wi_vintage")
-    String vintage;
-
-    @Column(value = "wi_producer")
-    String producer;
-
-    @Column(value = "wi_varietal")
-    String varietal;
-
-    @Column(value = "wi_designation")
-    String designation;
-
-    @Column(value = "wi_vineyard")
-    String vineyard;
-
-    @Column(value = "wi_country")
-    String country;
-
-    @Column(value = "wi_region")
-    String region;
-
-    @Column(value = "wi_subregion")
-    String subregion;
-
-    @Column(value = "wi_appellation")
-    String appellation;
+    @Override
+    public Mono<RSP> execute(final String guid) {
+        return repository.findByGuid(guid)
+                .map(toResourceFn)
+                .onErrorResume(t -> handleException(t, "find " + entityType));
+    }
 
 }
