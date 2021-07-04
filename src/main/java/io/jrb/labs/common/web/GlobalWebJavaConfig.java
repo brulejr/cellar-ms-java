@@ -21,17 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.config;
+package io.jrb.labs.common.web;
 
-import io.jrb.labs.common.traceability.TraceabilityJavaConfig;
-import io.jrb.labs.common.web.GlobalWebJavaConfig;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.http.codec.ServerCodecConfigurer;
 
 @Configuration
-@Import({
-        GlobalWebJavaConfig.class,
-        TraceabilityJavaConfig.class
-})
-public class WebJavaConfig {
+public class GlobalWebJavaConfig {
+
+    @Bean
+    public GlobalErrorAttributes globalErrorAttributes() {
+        return new GlobalErrorAttributes();
+    }
+
+    @Bean
+    public GlobalErrorWebExceptionHandler globalErrorWebExceptionHandler(
+            final GlobalErrorAttributes globalErrorAttributes,
+            final ApplicationContext applicationContext,
+            final ServerCodecConfigurer serverCodecConfigurer
+    ) {
+        return new GlobalErrorWebExceptionHandler(globalErrorAttributes, applicationContext, serverCodecConfigurer);
+    }
+
 }

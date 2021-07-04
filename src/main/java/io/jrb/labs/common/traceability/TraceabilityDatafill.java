@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Jon Brule <brulejr@gmail.com>
+ * Copyright (c) 2020 Jon Brule <brulejr@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.common.web;
+package io.jrb.labs.common.traceability;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.ServerCodecConfigurer;
+import lombok.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 
-@Configuration
-public class GlobalErrorJavaConfig {
+@Value
+@ConstructorBinding
+@ConfigurationProperties("traceability.headers")
+public class TraceabilityDatafill {
 
-    @Bean
-    public GlobalErrorAttributes globalErrorAttributes() {
-        return new GlobalErrorAttributes();
-    }
+    String applicationId;
+    String duration;
+    String requestId;
+    String transactionId;
 
-    @Bean
-    public GlobalErrorWebExceptionHandler globalErrorWebExceptionHandler(
-            final GlobalErrorAttributes globalErrorAttributes,
-            final ApplicationContext applicationContext,
-            final ServerCodecConfigurer serverCodecConfigurer
-    ) {
-        return new GlobalErrorWebExceptionHandler(globalErrorAttributes, applicationContext, serverCodecConfigurer);
-    }
+    String applicationName;
+
+    String listSeparator = "::";
 
 }

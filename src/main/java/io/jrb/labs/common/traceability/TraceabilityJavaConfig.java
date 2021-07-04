@@ -21,17 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.config;
+package io.jrb.labs.common.traceability;
 
-import io.jrb.labs.common.traceability.TraceabilityJavaConfig;
-import io.jrb.labs.common.web.GlobalWebJavaConfig;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({
-        GlobalWebJavaConfig.class,
-        TraceabilityJavaConfig.class
-})
-public class WebJavaConfig {
+@EnableConfigurationProperties(TraceabilityDatafill.class)
+public class TraceabilityJavaConfig {
+
+    @Bean
+    public TraceabilityWebFilter traceabilityWebFilter(final TraceabilityDatafill traceabilityDatafill) {
+        final TraceabilityRequestHeaderExtractor traceabilityRequestHeaderExtractor
+                = new TraceabilityRequestHeaderExtractor(traceabilityDatafill);
+        final TraceabilityResponseHeaderCompositor traceabilityResponseHeaderCompositor
+                = new TraceabilityResponseHeaderCompositor(traceabilityDatafill);
+        return new TraceabilityWebFilter(
+                traceabilityDatafill,
+                traceabilityRequestHeaderExtractor,
+                traceabilityResponseHeaderCompositor
+        );
+    }
+
 }
