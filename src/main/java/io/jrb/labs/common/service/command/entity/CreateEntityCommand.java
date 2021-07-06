@@ -26,12 +26,21 @@ package io.jrb.labs.common.service.command.entity;
 import io.jrb.labs.common.domain.Entity;
 import io.jrb.labs.common.repository.EntityRepository;
 import io.jrb.labs.common.service.command.Command;
+import io.jrb.labs.common.service.command.CommandException;
+import lombok.extern.slf4j.Slf4j;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
+@Slf4j
 public abstract class CreateEntityCommand<REQ, RSP, E extends Entity<E>> implements Command<REQ, RSP> {
+
+    private static final String UNIQUE_INDEX_ERROR = "Unique index or primary key violation";
 
     private final String entityType;
     private final Function<REQ, E> toEntityFn;
@@ -57,7 +66,23 @@ public abstract class CreateEntityCommand<REQ, RSP, E extends Entity<E>> impleme
                 .map(entity -> entity.withGuid(UUID.randomUUID().toString()))
                 .flatMap(repository::save)
                 .map(toResourceFn)
-                .onErrorResume(t -> handleException(t, "create " + entityType));
+                .onErrorResume(t -> handleException(t));
+    }
+
+    private Mono<RSP> handleException(final Throwable t) {
+        final Throwable rootCause = NestedExceptionUtils.getRootCause(t);
+        if (rootCause instanceof JdbcSQLIntegrityConstraintViolationException) {
+            final Optional<String> message = Optional.ofNullable(rootCause).map(Throwable::getMessage);
+            if (message.isPresent() && message.get().startsWith(UNIQUE_INDEX_ERROR)) {
+                return Mono.error(new DuplicateEntityException(this, entityType));
+            }
+        }
+        return Mono.error(new CommandException(
+                this,
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "create " + entityType,
+                t
+        ));
     }
 
 }

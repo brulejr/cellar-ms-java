@@ -50,7 +50,8 @@ public abstract class FindEntityCommand<RSP, E extends Entity<E>> implements Com
     public Mono<RSP> execute(final String guid) {
         return repository.findByGuid(guid)
                 .map(toResourceFn)
-                .onErrorResume(t -> handleException(t, "find " + entityType));
+                .onErrorResume(t -> handleException(t, "find " + entityType))
+                .switchIfEmpty(Mono.error(new UnknownEntityException(this, entityType)));
     }
 
 }

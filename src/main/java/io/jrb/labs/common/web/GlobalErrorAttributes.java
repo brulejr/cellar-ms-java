@@ -23,6 +23,7 @@
  */
 package io.jrb.labs.common.web;
 
+import io.jrb.labs.common.service.command.CommandException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
@@ -31,12 +32,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
 
-    private HttpStatus status = HttpStatus.BAD_REQUEST;
+    private HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
     private String message;
 
     @Override
@@ -44,10 +46,17 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
             final ServerRequest request,
             final ErrorAttributeOptions options
     ) {
-        final Throwable error = getError(request);
         final Map<String, Object> map = super.getErrorAttributes(request, options);
+
+        final Throwable error = getError(request);
+        if (error instanceof CommandException) {
+            final int statusCode = ((CommandException)error).getStatusCode();
+            Optional.ofNullable(HttpStatus.resolve(statusCode)).ifPresent(this::setStatus);
+        }
+
         map.put("status", getStatus());
         map.put("error", error.getMessage());
+
         return map;
     }
 

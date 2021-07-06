@@ -21,36 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.common.service.command;
+package io.jrb.labs.common.service.command.entity;
 
-public class CommandException extends RuntimeException {
+import io.jrb.labs.common.service.command.Command;
+import org.springframework.http.HttpStatus;
 
-    private final String commandName;
-    private final int statusCode;
+import static java.lang.String.format;
 
-    public <REQ, RSP> CommandException(
-            final Command<REQ, RSP> command,
-            final int statusCode,
-            final String message
-    ) {
-        super(message);
-        this.statusCode = statusCode;
-        this.commandName = command.getCommandName();
+public class DuplicateEntityException extends EntityCommandException {
+
+    private static final String ERROR_MESSAGE = "Duplicate %s entity encountered!";
+
+    public <REQ, RSP> DuplicateEntityException(final Command<REQ, RSP> command, final String entityType) {
+        super(command, HttpStatus.CONFLICT.value(), format(ERROR_MESSAGE, entityType));
     }
-
-    public <REQ, RSP> CommandException(
-            final Command<REQ, RSP> command,
-            final int statusCode,
-            final String message,
-            final Throwable cause
-    ) {
-        super(message, cause);
-        this.statusCode = statusCode;
-        this.commandName = command.getCommandName();
-    }
-
-    public String getCommandName() { return commandName; }
-
-    public int getStatusCode() { return statusCode; }
 
 }

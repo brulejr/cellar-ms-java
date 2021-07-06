@@ -24,6 +24,7 @@
 package io.jrb.labs.common.service.command;
 
 import org.reactivestreams.Publisher;
+import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
 import static java.lang.String.format;
@@ -54,7 +55,11 @@ public interface Command<REQ, RSP> {
      */
     default <T> Mono<T> handleException(final Throwable t, final String action) {
         final String pattern = "Unable to %s due to unexpected error!";
-        return Mono.error(new CommandException(this, format(pattern, action), t));
+        return Mono.error(new CommandException(
+                this,
+                HttpStatus.INTERNAL_SERVER_ERROR.value(), format(pattern, action),
+                t
+        ));
     }
 
     /**

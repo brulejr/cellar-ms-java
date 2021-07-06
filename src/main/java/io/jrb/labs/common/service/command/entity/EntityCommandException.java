@@ -21,36 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.common.service.command;
+package io.jrb.labs.common.service.command.entity;
 
-public class CommandException extends RuntimeException {
+import io.jrb.labs.common.service.command.Command;
+import io.jrb.labs.common.service.command.CommandException;
 
-    private final String commandName;
-    private final int statusCode;
+public class EntityCommandException extends CommandException {
 
-    public <REQ, RSP> CommandException(
+    public <REQ, RSP> EntityCommandException(
             final Command<REQ, RSP> command,
             final int statusCode,
             final String message
     ) {
-        super(message);
-        this.statusCode = statusCode;
-        this.commandName = command.getCommandName();
+        super(command, statusCode, message);
     }
 
-    public <REQ, RSP> CommandException(
+    public <REQ, RSP> EntityCommandException(
             final Command<REQ, RSP> command,
             final int statusCode,
             final String message,
             final Throwable cause
     ) {
-        super(message, cause);
-        this.statusCode = statusCode;
-        this.commandName = command.getCommandName();
+        super(command, statusCode, message, cause);
     }
-
-    public String getCommandName() { return commandName; }
-
-    public int getStatusCode() { return statusCode; }
 
 }
