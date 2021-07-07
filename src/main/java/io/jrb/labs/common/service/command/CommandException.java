@@ -26,31 +26,31 @@ package io.jrb.labs.common.service.command;
 public class CommandException extends RuntimeException {
 
     private final String commandName;
-    private final int statusCode;
+    private final int code;
 
     public <REQ, RSP> CommandException(
             final Command<REQ, RSP> command,
-            final int statusCode,
+            final int code,
             final String message
     ) {
         super(message);
-        this.statusCode = statusCode;
+        this.code = code;
         this.commandName = command.getCommandName();
     }
 
     public <REQ, RSP> CommandException(
             final Command<REQ, RSP> command,
-            final int statusCode,
+            final int code,
             final String message,
             final Throwable cause
     ) {
         super(message, cause);
-        this.statusCode = statusCode;
+        this.code = code;
         this.commandName = command.getCommandName();
     }
 
-    public String getCommandName() { return commandName; }
+    public int getCode() { return code; }
 
-    public int getStatusCode() { return statusCode; }
+    public String getCommandName() { return commandName; }
 
 }

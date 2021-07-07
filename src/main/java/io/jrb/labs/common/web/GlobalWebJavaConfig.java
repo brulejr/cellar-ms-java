@@ -23,10 +23,8 @@
  */
 package io.jrb.labs.common.web;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.codec.ServerCodecConfigurer;
 
 @Configuration
 public class GlobalWebJavaConfig {
@@ -34,15 +32,6 @@ public class GlobalWebJavaConfig {
     @Bean
     public GlobalErrorAttributes globalErrorAttributes() {
         return new GlobalErrorAttributes();
-    }
-
-    @Bean
-    public GlobalErrorWebExceptionHandler globalErrorWebExceptionHandler(
-            final GlobalErrorAttributes globalErrorAttributes,
-            final ApplicationContext applicationContext,
-            final ServerCodecConfigurer serverCodecConfigurer
-    ) {
-        return new GlobalErrorWebExceptionHandler(globalErrorAttributes, applicationContext, serverCodecConfigurer);
     }
 
 }
