@@ -23,6 +23,7 @@
  */
 package io.jrb.labs.common.traceability;
 
+import io.jrb.labs.common.web.GlobalErrorAttributes;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(TraceabilityDatafill.class)
 public class TraceabilityJavaConfig {
+
+    @Bean
+    public GlobalErrorAttributes globalErrorAttributes(final TraceabilityDatafill traceabilityDatafill) {
+        return new GlobalErrorAttributes(traceabilityDatafill);
+    }
 
     @Bean
     public TraceabilityWebFilter traceabilityWebFilter(final TraceabilityDatafill traceabilityDatafill) {

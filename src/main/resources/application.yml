@@ -7,6 +7,8 @@ info:
 
 server:
   port:  4050
+  error:
+    include-message: always
 
 traceability:
   headers:

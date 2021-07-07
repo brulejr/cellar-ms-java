@@ -23,14 +23,22 @@
  */
 package io.jrb.labs.common.web;
 
-import io.jrb.labs.common.service.command.CommandException;
+import io.jrb.labs.common.traceability.TraceabilityDatafill;
+import org.javatuples.Pair;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class GlobalErrorAttributes extends DefaultErrorAttributes {
+
+    private final TraceabilityDatafill traceabilityDatafill;
+
+    public GlobalErrorAttributes(final TraceabilityDatafill traceabilityDatafill) {
+        this.traceabilityDatafill = traceabilityDatafill;
+    }
 
     @Override
     public Map<String, Object> getErrorAttributes(
@@ -39,12 +47,15 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
     ) {
         final Map<String, Object> map = super.getErrorAttributes(request, options);
 
-        final Throwable error = getError(request);
-        if (error instanceof CommandException) {
-            map.put("error", error.getMessage());
-        }
+        extractHeader(request, traceabilityDatafill.getTransactionId())
+                .ifPresent(pair -> map.put(pair.getValue0(), pair.getValue1()));
 
         return map;
+    }
+
+    private Optional<Pair<String, String>> extractHeader(final ServerRequest request, final String key) {
+        return Optional.ofNullable(request.headers().firstHeader(key))
+                .map(value -> Pair.with(key, value));
     }
 
 }

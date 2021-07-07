@@ -24,13 +24,11 @@
 package io.jrb.labs.cellarms.config;
 
 import io.jrb.labs.common.traceability.TraceabilityJavaConfig;
-import io.jrb.labs.common.web.GlobalWebJavaConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        GlobalWebJavaConfig.class,
         TraceabilityJavaConfig.class
 })
 public class WebJavaConfig {

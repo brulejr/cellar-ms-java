@@ -55,7 +55,7 @@ public class TraceabilityRequestHeaderExtractor implements Function<ServerHttpRe
     private Pair<String, String> extractHeader(final HttpHeaders httpHeaders, final String key) {
         final String value = Optional.ofNullable(httpHeaders.get(key))
                 .map(list -> String.join(traceabilityDatafill.getListSeparator(), list))
-                .orElseThrow(() -> new IllegalStateException("Header '" + key +"' cannot be null!"));
+                .orElseThrow(() -> new MissingTraceabilityHeaderException("Header '" + key +"' cannot be null!"));
         return Pair.with(key, value);
     }
 

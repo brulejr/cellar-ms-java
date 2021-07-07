@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.common.web;
+package io.jrb.labs.common.traceability;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-@Configuration
-public class GlobalWebJavaConfig {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class MissingTraceabilityHeaderException extends ResponseStatusException {
 
-    @Bean
-    public GlobalErrorAttributes globalErrorAttributes() {
-        return new GlobalErrorAttributes();
+    public MissingTraceabilityHeaderException(final String reason) {
+        super(HttpStatus.BAD_REQUEST, reason);
     }
 
 }
