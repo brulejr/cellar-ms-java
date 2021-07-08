@@ -21,53 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.cellarms.resource;
+package io.jrb.labs.common.resource;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
-import io.jrb.labs.common.resource.Projection;
-import lombok.Builder;
-import lombok.Value;
+public enum Projection {
 
-@Value
-@Builder
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class WineResource {
+    SUMMARY(Summary.class),
+    DETAILS(Detail.class),
+    DEEP(Deep.class);
 
-    @JsonView(Projection.Summary.class)
-    String guid;
+    private final Class<?> view;
 
-    @JsonView(Projection.Summary.class)
-    String name;
+    Projection(final Class<?> view) {
+        this.view = view;
+    }
 
-    @JsonView(Projection.Summary.class)
-    String type;
+    public Class<?> getView() {
+        return view;
+    }
 
-    @JsonView(Projection.Summary.class)
-    String vintage;
+    public static class Summary {
+    }
 
-    @JsonView(Projection.Summary.class)
-    String producer;
+    public static class Detail extends Summary {
+    }
 
-    @JsonView(Projection.Detail.class)
-    String varietal;
-
-    @JsonView(Projection.Detail.class)
-    String designation;
-
-    @JsonView(Projection.Detail.class)
-    String vineyard;
-
-    @JsonView(Projection.Detail.class)
-    String country;
-
-    @JsonView(Projection.Detail.class)
-    String region;
-
-    @JsonView(Projection.Detail.class)
-    String subregion;
-
-    @JsonView(Projection.Detail.class)
-    String appellation;
+    public static class Deep extends Detail {
+    }
 
 }

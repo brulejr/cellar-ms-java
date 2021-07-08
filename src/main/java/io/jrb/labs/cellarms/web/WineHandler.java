@@ -28,9 +28,11 @@ import io.jrb.labs.cellarms.resource.WineResource;
 import io.jrb.labs.cellarms.service.command.CreateWineCommand;
 import io.jrb.labs.cellarms.service.command.FindWineCommand;
 import io.jrb.labs.cellarms.service.command.GetWinesCommand;
+import io.jrb.labs.common.resource.Projection;
 import io.jrb.labs.common.web.RouteHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2CodecSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -66,6 +68,7 @@ public class WineHandler implements RouteHandler {
                 final Mono<WineResource> wineResourceMono = createWineCommand.execute(wine);
                 return ServerResponse.status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .hint(Jackson2CodecSupport.JSON_VIEW_HINT, Projection.Detail.class)
                         .body(wineResourceMono, WineResource.class);
             }), serverRequest, AddWine.class, validator);
     }
@@ -75,6 +78,7 @@ public class WineHandler implements RouteHandler {
         final Mono<WineResource> wineResourceMono = findWineCommand.execute(wineGuid);
         return wineResourceMono.flatMap(wine ->
                 ServerResponse.ok()
+                        .hint(Jackson2CodecSupport.JSON_VIEW_HINT, Projection.Detail.class)
                         .body(fromValue(wine)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
@@ -82,6 +86,7 @@ public class WineHandler implements RouteHandler {
     public Mono<ServerResponse> getAllWines(final ServerRequest serverRequest) {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
+                .hint(Jackson2CodecSupport.JSON_VIEW_HINT, Projection.Summary.class)
                 .body(getWinesCommand.execute(null), WineResource.class);
     }
 
