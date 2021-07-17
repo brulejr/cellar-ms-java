@@ -1,11 +1,5 @@
 pipeline {
-
     agent any
-
-    tools {
-        jdk "openjdk-11"
-    }
-
     stages {
         stage ('Checkout') {
             steps {
@@ -13,26 +7,18 @@ pipeline {
                 sh 'ls -lat'
             }
         }
-        stage("Compile") {
+        stage("Build") {
+            agent {
+                docker {
+                    image 'gradle:6.7-jdk11'
+                    reuseNode true
+                }
+            }
             steps {
-                sh "./gradlew clean classes testClasses"
+                sh 'gradle clean build'
             }
         }
-        stage ('Analysis') {
-            steps {
-                sh './gradlew check'
-                junit "**/build/test-results/test/*.xml"
-                jacoco(
-                    execPattern: 'build/jacoco/jacoco.exec'
-                )
-            }
-        }
-        stage ('Build') {
-            steps {
-                sh './gradlew build'
-            }
-        }
-        stage ('Docker') {
+        stage('Publish') {
             environment {
                 DOCKERHUB_CREDENTIALS = credentials('dockerhub')
             }
@@ -41,5 +27,4 @@ pipeline {
             }
         }
     }
-
 }
