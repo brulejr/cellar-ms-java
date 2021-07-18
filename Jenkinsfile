@@ -19,6 +19,12 @@ pipeline {
             }
         }
         stage('Publish') {
+            agent {
+                docker {
+                    image 'gradle:7-jdk11'
+                    reuseNode true
+                }
+            }
             environment {
                 DOCKERHUB_CREDENTIALS = credentials('dockerhub')
             }
