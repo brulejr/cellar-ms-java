@@ -31,7 +31,7 @@ pipeline {
         }
         stage("Deploy to DEV") {
             environment {
-                SSH = "ssh -o StrictHostKeyChecking=no -l sysadm dkrsvd01.brulenet.org"
+                SSH = "ssh -o StrictHostKeyChecking=no -l deploy dkrsvd01.brulenet.org"
             }
             steps {
                 sshagent(credentials: ['jenkins_deploy']) {
