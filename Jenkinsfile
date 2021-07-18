@@ -29,5 +29,12 @@ pipeline {
                 sh "gradle jib"
             }
         }
+        stage("Deploy to DEV") {
+            steps {
+                sshagent(credentials: ['jenkins_deploy']) {
+                    sh 'ssh -o StrictHostKeyChecking=no -l sysadm dkrsvd01.brulenet.org uname -a'
+                }
+            }
+        }
     }
 }
