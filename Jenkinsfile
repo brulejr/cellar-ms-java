@@ -10,7 +10,7 @@ pipeline {
         stage("Build") {
             agent {
                 docker {
-                    image 'gradle:6.7-jdk11'
+                    image 'gradle:7-jdk11'
                     reuseNode true
                 }
             }
