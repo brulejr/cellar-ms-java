@@ -30,9 +30,11 @@ pipeline {
             }
         }
         stage("Deploy to DEV") {
+            environment {
+                SSH = "ssh -o StrictHostKeyChecking=no -l sysadm dkrsvd01.brulenet.org"
+            }
             steps {
                 sshagent(credentials: ['jenkins_deploy']) {
-                    def SSH = "ssh -o StrictHostKeyChecking=no -l sysadm dkrsvd01.brulenet.org"
                     sh "${SSH} docker run -p 4050:4050 -d -name cellar-ms-java brulejr/cellar-ms-java:latest"
                 }
             }
