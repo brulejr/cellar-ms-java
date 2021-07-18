@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'gradle:7-jdk11'
+            reuseNode true
+        }
+    }
     stages {
         stage ('Checkout') {
             steps {
@@ -8,23 +13,11 @@ pipeline {
             }
         }
         stage("Build") {
-            agent {
-                docker {
-                    image 'gradle:7-jdk11'
-                    reuseNode true
-                }
-            }
             steps {
                 sh 'gradle clean build'
             }
         }
         stage('Publish') {
-            agent {
-                docker {
-                    image 'gradle:7-jdk11'
-                    reuseNode true
-                }
-            }
             environment {
                 DOCKERHUB_CREDENTIALS = credentials('dockerhub')
             }
