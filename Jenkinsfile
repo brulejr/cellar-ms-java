@@ -22,7 +22,7 @@ pipeline {
                 DOCKERHUB_CREDENTIALS = credentials('dockerhub')
             }
             steps {
-                sh "./gradlew jib"
+                sh "gradle jib"
             }
         }
     }
