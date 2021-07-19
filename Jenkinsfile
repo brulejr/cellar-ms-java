@@ -5,6 +5,10 @@ pipeline {
             reuseNode true
         }
     }
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        SSH = "ssh -o StrictHostKeyChecking=no -l deploy dkrsvd01.brulenet.org"
+    }
     stages {
         stage ('Checkout') {
             steps {
@@ -22,17 +26,11 @@ pipeline {
             }
         }
         stage('Publish') {
-            environment {
-                DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-            }
             steps {
                 sh "gradle jib"
             }
         }
-        stage("Deploy to DEV") {
-            environment {
-                SSH = "ssh -o StrictHostKeyChecking=no -l deploy dkrsvd01.brulenet.org"
-            }
+        stage("Deploy") {
             steps {
                 sshagent(credentials: ['jenkins_deploy']) {
                     sh "${SSH} docker run -p 4050:4050 -d --name cellar-ms-java brulejr/cellar-ms-java:latest"
