@@ -33,6 +33,9 @@ pipeline {
         stage("Deploy") {
             steps {
                 sshagent(credentials: ['jenkins_deploy']) {
+                    sh "${SSH} docker pull brulejr/cellar-ms-java:latest"
+                    sh "${SSH} docker stop cellar-ms-java"
+                    sh "${SSH} docker rm cellar-ms-java"
                     sh "${SSH} docker run -p 4050:4050 -d --name cellar-ms-java brulejr/cellar-ms-java:latest"
                 }
             }
