@@ -7,7 +7,9 @@ pipeline {
     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        SSH = "ssh -o StrictHostKeyChecking=no -l deploy dkrsvd01.brulenet.org"
+        DOCKER_DEPLOY_HOST = credentials("docker_deploy_host")
+        DOCKER_DEPLOY_USER = credentials("docker_deploy_user")
+        SSH = "ssh -o StrictHostKeyChecking=no -l ${DOCKER_DEPLOY_USER} ${DOCKER_DEPLOY_HOST}"
     }
     stages {
         stage ('Checkout') {
