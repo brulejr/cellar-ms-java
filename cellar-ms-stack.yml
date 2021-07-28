@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  cellar-ms:
+    image: brulejr/cellar-ms-java
+    ports:
+      - "4050:4050"
